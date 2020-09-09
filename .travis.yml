@@ -1,0 +1,22 @@
+dist: bionic
+
+env:
+  global:
+    - IMAGE_NAME=pkskubeflow/metadata-base
+    - CODE_TAG=master
+
+arch:
+  - arm64
+
+services:
+  - docker
+
+before_install:
+  - git clone -b ${CODE_TAG} --depth 1 https://github.com/kubeflow/metadata.git
+
+script:
+
+  - cd metadata
+  - docker build -t ${IMAGE_NAME} -f dockerfiles/Dockerfile-linux-base.aarch64 .
+  - docker login -u ${DOCKER_USER} -p ${DOCKER_PWD}
+  - docker push ${IMAGE_NAME}
